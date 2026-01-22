@@ -36,6 +36,9 @@ export async function fetchCloudflareApi<T>({
 	responseSchema?: z.ZodType<T>
 	options?: RequestInit
 }): Promise<T> {
+	if (/\.\.\/?/.test(decodeURIComponent(`${accountId}${endpoint}`))) {
+		throw new Error('endpoint must not be relative')
+	}
 	const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}${endpoint}`
 
 	// @ts-expect-error We don't have actual env in this package
